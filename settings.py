@@ -19,8 +19,8 @@ class BasicConfig:
     mean = [0.4845]
     std = [0.1884]
     alphabet_name = "FA_LPR"
-    train_directory = '/home/ai/projects/vehicle-plate-recognition-training/recognition/datasets/train'
-    val_directory = '/home/ai/projects/vehicle-plate-recognition-training/recognition/datasets/val'
+    train_directory = 'D:/Mahdi/Ariyadis/crnn-pytorch/datasets/train'
+    val_directory = 'D:/Mahdi/Ariyadis/crnn-pytorch/datasets/val'
     output_dir = "output"
 
     def update_basic(self):
@@ -98,9 +98,9 @@ class Config(AugConfig):
     lr_patience = 10
     min_lr = 5e-6
     lr_reduce_factor = 0.1
-    batch_size = 128
+    batch_size = 1
     epochs = 200
-    n_workers = 8
+    n_workers = 0
 
     alphabets = ALPHABETS[BasicConfig.alphabet_name]
     char2label = dict()

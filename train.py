@@ -12,6 +12,8 @@ from torch.nn import CTCLoss
 from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint, LearningRateMonitor
 
 torch.backends.cudnn.benchmark = True
+torch.cuda.empty_cache()
+
 
 
 class LitCRNN(pl.LightningModule):
@@ -104,10 +106,10 @@ class LitCRNN(pl.LightningModule):
 def main():
     parser = ArgumentParser()
     parser.add_argument("--train_directory", type=Path,
-                        default="/home/ai/projects/vehicle-plate-recognition-training/recognition/datasets/train",
+                        default="D:/Mahdi/Ariyadis/crnn-pytorch/datasets/train",
                         help="path to the dataset, default: ./dataset")
     parser.add_argument("--val_directory", type=Path,
-                        default="/home/ai/projects/vehicle-plate-recognition-training/recognition/datasets/val",
+                        default="D:/Mahdi/Ariyadis/crnn-pytorch/datasets/val",
                         help="path to the dataset, default: ./dataset")
     parser.add_argument("--output_dir", type=Path, default="./output",
                         help="path to the output directory, default: ./output")
@@ -118,7 +120,7 @@ def main():
     parser.add_argument("--img_w", type=int, default=100, help="dataset img width size")
     parser.add_argument("--n_workers", type=int, default=8, help="number of workers used for dataset collection")
     parser.add_argument("--batch_size", type=int, default=128, help="batch size number")
-    parser.add_argument("--alphabets", default='ابپتشثجدزسصطعفقکگلمنوهی+۰۱۲۳۴۵۶۷۸۹',
+    parser.add_argument("--alphabets", default='اآبپتثجچحخدذرزژسشصضطظعغفقکگلمنوهی+۰۱۲۳۴۵۶۷۸۹() ،',
                         help="alphabets used in the process")
     parser.add_argument("--visualize", action="store_true", help="Visualize data-loader")
     args = parser.parse_args()
@@ -131,7 +133,8 @@ def main():
     model_checkpoint = ModelCheckpoint(dirpath=output_dir, filename=config.file_name, monitor="val_loss",
                                        verbose=True)
     learning_rate_monitor = LearningRateMonitor(logging_interval="epoch")
-    trainer = pl.Trainer(gpus=1 if config.device == "cuda" else 0,
+    trainer = pl.Trainer(accelerator='gpu',
+                         devices=1,
                          max_epochs=config.epochs,
                          min_epochs=config.epochs // 10,
                          callbacks=[early_stopping, model_checkpoint, learning_rate_monitor],
@@ -145,7 +148,6 @@ def main():
         print("[INFO] Visualizing val-loader")
         visualize_data_loader(val_loader, mean=config.mean, std=config.std)
         exit(0)
-
     trainer.fit(model=lit_crnn, train_dataloaders=train_loader, val_dataloaders=val_loader)
 
     trainer.test(lit_crnn, ckpt_path="best", dataloaders=val_loader)
@@ -158,3 +160,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

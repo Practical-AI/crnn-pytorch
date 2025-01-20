@@ -7,7 +7,7 @@ from get_character_sets import get_unique_characters
 
 parser = ArgumentParser()
 parser.add_argument("--data_directory", required=True, type=str, help="path to dataset")
-parser.add_argument("--batch_size", default=128)
+parser.add_argument("--batch_size", default=1)
 parser.add_argument("--img_h", default=32, type=int)
 
 if __name__ == '__main__':
